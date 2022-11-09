@@ -66,7 +66,7 @@ ros2 topic pub /tracking_pose geometry_msgs/msg/PoseStamped '{header: {stamp: {s
 `
 
 `
-ros2 topic pub /tracking_pose geometry_msgs/msg/PoseStamped '{header: {stamp: {sec: 0, nanosec: 0}, frame_id: "map"}, pose: {position: {x: 0.307, y: 0.0, z: 0.59023}, orientation: {x: 0.924, y: -0.382, z: -0.0002, w: 0.00048}}}' -1
+ros2 topic pub /tracking_pose geometry_msgs/msg/PoseStamped '{header: {stamp: {sec: 0, nanosec: 0}, frame_id: "map"}, pose: {position: {x: 0.307, y: 0.0, z: 0.59023}, orientation: {x: 0.924, y: -0.382, z: 0.0, w: 0.0}}}' -1
 `
 
 `

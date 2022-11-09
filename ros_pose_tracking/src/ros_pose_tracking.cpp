@@ -162,15 +162,6 @@ int main(int argc, char ** argv)
   move_group_interface.setMaxVelocityScalingFactor(ros_pose_tracking::SPEED_SCALE);
 
   tracker->configure();
-
-  moveit_visual_tools::MoveItVisualTools visual_tools(
-    tracker,
-    "panda_link0",
-    // default viz marker_topic
-    rviz_visual_tools::RVIZ_MARKER_TOPIC,
-    move_group_interface.getRobotModel());
-  moveit_visual_tools_ptr = &visual_tools;
-
   std::string reference_frame(move_group_interface.getPoseReferenceFrame());
   std::string eef_link_name(move_group_interface.getEndEffectorLink());
   RCLCPP_INFO(
@@ -179,14 +170,13 @@ int main(int argc, char ** argv)
     reference_frame.c_str(),
     eef_link_name.c_str());
 
-  geometry_msgs::msg::PoseStamped current_pose;
-  current_pose = move_group_interface.getCurrentPose(eef_link_name);
-  geometry_msgs::msg::Pose eef_pose;
-  eef_pose = current_pose.pose;
-  RCLCPP_INFO(ros_pose_tracking::LOGGER, "Current EEF pose:");
-  std::cout << eef_pose.position.x << "/" << eef_pose.position.y << "/" << eef_pose.position.z <<
-    ", " << eef_pose.orientation.x << "/" << eef_pose.orientation.y << "/" <<
-    eef_pose.orientation.z << "/" << eef_pose.orientation.w << std::endl << std::endl;
+  moveit_visual_tools::MoveItVisualTools visual_tools(
+    tracker,
+    reference_frame,
+    // default viz marker_topic
+    rviz_visual_tools::RVIZ_MARKER_TOPIC,
+    move_group_interface.getRobotModel());
+  moveit_visual_tools_ptr = &visual_tools;
 
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(tracker);
