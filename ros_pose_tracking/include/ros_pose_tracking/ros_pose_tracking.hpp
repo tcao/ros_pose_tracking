@@ -103,6 +103,12 @@ public:
     return !help;
   }
 
+  static void signal_handler(int signal)
+  {
+    (void)signal;
+    rclcpp::shutdown();
+  }
+
 private:
   std::string group_name_;
   // Move group interface for the robot - It is very picky for way it is instantiated

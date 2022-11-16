@@ -73,12 +73,6 @@ void PoseTracking::configure()
 }
 }  // namespace ros_pose_tracking
 
-static void signal_handler(int signal)
-{
-  (void)signal;
-  rclcpp::shutdown();
-}
-
 namespace
 {
 moveit::planning_interface::MoveGroupInterface * move_group_interface_ptr = nullptr;
@@ -139,8 +133,8 @@ int main(int argc, char ** argv)
   }
 
   // Install user break handler
-  std::signal(SIGINT, signal_handler);
-  std::signal(SIGTERM, signal_handler);
+  std::signal(SIGINT, ros_pose_tracking::signal_handler);
+  std::signal(SIGTERM, ros_pose_tracking::signal_handler);
 
   // Initialize ROS and create the Node
   rclcpp::init(argc, argv);
@@ -164,9 +158,11 @@ int main(int argc, char ** argv)
   tracker->configure();
   std::string reference_frame(move_group_interface.getPoseReferenceFrame());
   std::string eef_link_name(move_group_interface.getEndEffectorLink());
+  std::string base_link_name(move_group_interface.getRobotModel()->getRootLinkName());
   RCLCPP_INFO(
     ros_pose_tracking::LOGGER,
-    "Reference Frame: %s, End effector link: %s",
+    "Base Link Frame: %s, Reference Frame: %s, End effector link: %s",
+    base_link_name.c_str(),
     reference_frame.c_str(),
     eef_link_name.c_str());
 
@@ -177,6 +173,15 @@ int main(int argc, char ** argv)
     rviz_visual_tools::RVIZ_MARKER_TOPIC,
     move_group_interface.getRobotModel());
   moveit_visual_tools_ptr = &visual_tools;
+
+  RCLCPP_INFO(
+    ros_pose_tracking::LOGGER,
+    "rviz_visual_tool publishing topic: %s",
+    rviz_visual_tools::RVIZ_MARKER_TOPIC.c_str());
+
+  // Force visual tool to publish the rviz_visual_tools topic
+  // otherwise the topic will not show up from RViz till there is actual motion
+  moveit_visual_tools_ptr->deleteAllMarkers();
 
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(tracker);
