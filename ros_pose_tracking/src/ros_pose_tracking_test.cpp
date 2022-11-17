@@ -121,7 +121,7 @@ public:
           entry->pose->header.frame_id = kDefaultPoseFrameID;
           entry->pose->pose.position.x = pose[0];
           entry->pose->pose.position.y = pose[1];
-          entry->pose->pose.position.x = pose[2];
+          entry->pose->pose.position.z = pose[2];
           entry->pose->pose.orientation.x = pose[3];
           entry->pose->pose.orientation.y = pose[4];
           entry->pose->pose.orientation.z = pose[5];

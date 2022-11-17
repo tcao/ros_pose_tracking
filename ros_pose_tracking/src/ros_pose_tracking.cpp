@@ -183,6 +183,14 @@ int main(int argc, char ** argv)
   // Force visual tool to publish the rviz_visual_tools topic
   // otherwise the topic will not show up from RViz till there is actual motion
   moveit_visual_tools_ptr->deleteAllMarkers();
+  {
+    // RViz provides many types of markers, in this demo we will use text, cylinders, and spheres
+    Eigen::Isometry3d text_pose = Eigen::Isometry3d::Identity();
+    text_pose.translation().z() = 1.0;
+    moveit_visual_tools_ptr->publishText(
+      text_pose, "ros_pose_tracking_demo", rviz_visual_tools::WHITE, rviz_visual_tools::XLARGE);
+    moveit_visual_tools_ptr->trigger();
+  }
 
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(tracker);
