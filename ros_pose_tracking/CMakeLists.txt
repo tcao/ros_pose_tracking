@@ -52,7 +52,7 @@ ament_target_dependencies(
 
 set(ROS_EEF_POSE_APP "ros_eef_pose")
 add_executable(${ROS_EEF_POSE_APP} src/${ROS_EEF_POSE_APP}.cpp)
-target_include_directories(ros_eef_pose PUBLIC
+target_include_directories(${ROS_EEF_POSE_APP} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(
@@ -66,13 +66,33 @@ ament_target_dependencies(
   "moveit_visual_tools"
 )
 
+set(ROS_POSE_TRACKING_TEST_APP "ros_pose_tracking_test")
+add_executable(${ROS_POSE_TRACKING_TEST_APP} src/${ROS_POSE_TRACKING_TEST_APP}.cpp)
+target_include_directories(${ROS_POSE_TRACKING_TEST_APP} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+ament_target_dependencies(
+  ${ROS_POSE_TRACKING_TEST_APP}
+  "rclcpp"
+  "geometry_msgs"
+  # the following are needed although not directly used because the included header file's dependencies
+  "moveit_msgs"
+  "moveit_ros_planning"
+  "moveit_ros_planning_interface"
+  "moveit_ros_move_group"
+  "moveit_visual_tools"
+)
+
 install(TARGETS ${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS ${ROS_EEF_POSE_APP}
   DESTINATION lib/${PROJECT_NAME})
 
-install(DIRECTORY launch
+install(TARGETS ${ROS_POSE_TRACKING_TEST_APP}
+  DESTINATION lib/${PROJECT_NAME})
+
+install(DIRECTORY launch config
   DESTINATION share/${PROJECT_NAME}
 )
 

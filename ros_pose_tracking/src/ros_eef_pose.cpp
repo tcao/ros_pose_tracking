@@ -34,6 +34,8 @@ static const rclcpp::Logger LOGGER = rclcpp::get_logger("ros_eef_pose");
 }  // anonymous namespace
 }  // namespace ros_eef_pose
 
+bool ros_pose_tracking::PoseTracking::stopped_ = false;
+
 int main(int argc, char ** argv)
 {
   // Parameters:

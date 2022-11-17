@@ -56,12 +56,14 @@ Here's the CLI I used to command ARM from another sourced shell console:
 
 `ros2 topic pub /tracking_pose geometry_msgs/msg/PoseStamped '{header: {stamp: {sec: 0, nanosec: 0}, frame_id: "map"}, pose: {position: {x: 0.316581, y: 0.515877, z: 0.388593}, orientation: {x: 0.924, y: -0.382405, z: -0.0000199, w: 0.0000177}}}' -1`
 
+# this causing problem
 `ros2 topic pub /tracking_pose geometry_msgs/msg/PoseStamped '{header: {stamp: {sec: 0, nanosec: 0}, frame_id: "map"}, pose: {position: {x: -0.316581, y: -0.515877, z: 0.388593}, orientation: {x: 0.924, y: -0.382405, z: -0.0000199, w: 0.0000177}}}' -1`
 
 `ros2 topic pub /tracking_pose geometry_msgs/msg/PoseStamped '{header: {stamp: {sec: 0, nanosec: 0}, frame_id: "map"}, pose: {position: {x: 0.316581, y: -0.515877, z: 0.388593}, orientation: {x: 0.924, y: -0.382405, z: -0.0000199, w: 0.0000177}}}' -1`
 
 `ros2 topic pub /tracking_pose geometry_msgs/msg/PoseStamped '{header: {stamp: {sec: 0, nanosec: 0}, frame_id: "map"}, pose: {position: {x: -0.316581, y: 0.515877, z: 0.388593}, orientation: {x: 0.924, y: -0.382405, z: -0.0000199, w: 0.0000177}}}' -1`
 
+# can't move it (UR)
 `ros2 topic pub /tracking_pose geometry_msgs/msg/PoseStamped '{header: {stamp: {sec: 0, nanosec: 0}, frame_id: "map"}, pose: {position: {x: 0.106936, y: -0.000008, z: 1.12102}, orientation: {x: 0.65324, y: -0.27045, z: 0.65344, w: -0.02705}}}' -1`
 
 `ros2 topic pub /tracking_pose geometry_msgs/msg/PoseStamped '{header: {stamp: {sec: 0, nanosec: 0}, frame_id: "map"}, pose: {position: {x: 0.40589, y: 0.357684, z: 0.75333}, orientation: {x: 0.747626, y: 0.65632, z: 0.10129, w: -0.00635}}}' -1`

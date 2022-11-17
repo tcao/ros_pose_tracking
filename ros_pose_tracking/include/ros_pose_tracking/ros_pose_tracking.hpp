@@ -49,8 +49,8 @@ namespace
 {
 // Default subscription topic name
 static const char defaultPoseCommandingTopic[] = "/tracking_pose";
-static const char defaultMoveGroupName[] = "panda_arm"; // For Panda 7DOF ARM
-                                                        // For Universal Robots "ur_manipulator"
+static const char defaultMoveGroupName[] = "panda_arm";   // For Panda 7DOF ARM
+                                                          // For Universal Robots "ur_manipulator"
 }  // anonymous namespace
 
 // Non-ROS parameters
@@ -102,6 +102,16 @@ public:
     }
     return !help;
   }
+
+  static void signal_handler(int signal)
+  {
+    (void)signal;
+    stopped_ = true;
+    rclcpp::shutdown();
+  }
+
+public:
+  static bool stopped_;
 
 private:
   std::string group_name_;
