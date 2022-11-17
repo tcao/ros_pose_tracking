@@ -75,6 +75,12 @@ ament_target_dependencies(
   ${ROS_POSE_TRACKING_TEST_APP}
   "rclcpp"
   "geometry_msgs"
+  # the following are needed although not directly used because the included header file's dependencies
+  "moveit_msgs"
+  "moveit_ros_planning"
+  "moveit_ros_planning_interface"
+  "moveit_ros_move_group"
+  "moveit_visual_tools"
 )
 
 install(TARGETS ${PROJECT_NAME}

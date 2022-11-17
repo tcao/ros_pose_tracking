@@ -42,6 +42,7 @@ static const double VISUAL_AXIS_RADIUS(0.01);
 static const double SPEED_SCALE(1.0);
 }  // anonymous namespace
 
+bool PoseTracking::stopped_ = false;
 PoseTracking::PoseTracking(
   const std::string name, std::string group_name,
   rclcpp::NodeOptions node_options,
@@ -133,8 +134,8 @@ int main(int argc, char ** argv)
   }
 
   // Install user break handler
-  std::signal(SIGINT, ros_pose_tracking::signal_handler);
-  std::signal(SIGTERM, ros_pose_tracking::signal_handler);
+  std::signal(SIGINT, ros_pose_tracking::PoseTracking::signal_handler);
+  std::signal(SIGTERM, ros_pose_tracking::PoseTracking::signal_handler);
 
   // Initialize ROS and create the Node
   rclcpp::init(argc, argv);
