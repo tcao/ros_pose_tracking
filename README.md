@@ -1,19 +1,32 @@
 # ros_pose_tracking
-ROS2 package for target pose tracking with MoveIt's move group interface framework.
-The node listens to the commanding topic /tracking_pose of type geometry_msgs/msg/PoseStamped.
-When a commanding topic is received, it plots desired pose first for visulization, then initiates motion planning and execution.
-<img width="50%" src="docs/ros_pose_tracking.gif" alt="motion planning/execution"/>
+ROS2 package for target pose tracking with MoveIt's move group interface framework.  
+The node listens to the commanding topic **/tracking_pose** of type **geometry_msgs/msg/PoseStamped**.  
+When a commanding topic is received, it plots desired pose first for visulization, then initiates motion planning and execution.  
+If motion planning is not solvable for a specific pose, you can see some logging info from the console, although visualization is shown at the desired pose, there is no motion could be executed.
+
+| <img width="100%" src="docs/ros_pose_tracking.panda.gif" alt="Pand"/> | <img width="100%" src="docs/ros_pose_tracking.ur10e.gif" alt="UR10e"/> |
+| :------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------: |
+|  7DOF Panda  |  6DOF UR10e  |
+
 
 ## Setup
 - [Humble]  
-It seems the node must run on the same machine where MoveIt runs, otherwise certain moveit components may crash.  
-"joint trajectory controller" introduces state tolerance check in Humble. As of 11/17/2022, binary distribution on AMD64 for the module is tagged as 2.12.0-1, which may not run properly because of this new tolerance check.  
+  - It seems the node must run on the same machine where MoveIt runs, otherwise certain moveit components may crash.  
+  - **joint trajectory controller** introduces state tolerance check in Humble. As of 11/2022, binary distribution on AMD64 for the module is tagged as 2.12.0-1, which may not run properly because of this new tolerance check.  
 The most recent source code is tagged as 2.13, which doesn't have this problem. So consider compiling this module from source:  
-`https://github.com/ros-controls/ros2_controllers.git/joint_trajectory_controller`
+`https://github.com/ros-controls/ros2_controllers.git/joint_trajectory_controller`  
+    - Humble with ARM64 distribution exhibits the same behavior.  
+  - MoveIt2 in Humble has very useful new feature to publish robot model (URDF and SRDF), ie., once one node enables the robot description publishing, other nodes may no longer need to load those parameters explicitly.  
+  For example, when publishing is enabled in MoveIt/RViz launch script, then **pose tracking** node doesn't need launch script.  
+  - Here's URDF/SRDF publishing enable details, and it can be added to your move group's parameters:  
+`
+ 'publish_robot_description': True,
+ 'publish_robot_description_semantic': True,  
+`  
 
 - [Foxy]  
-It should build and run out of box.  
-Although it runs, it is much more complicated than [Humble] to configure, i.e., it needs launch files, and corresponding robot model parameters explicitly.
+  - It should build and run out of box.  
+  - Although it runs, it is much more complicated than [Humble] to configure, i.e., **pose tracking** node depends on launch/config script.
 
 ## Build (same on both [Humble] and [Foxy])
 I used the following command to build, as personal preference, but any colcon command should do:  
@@ -23,23 +36,24 @@ I used the following command to build, as personal preference, but any colcon co
 ### 7DOF Panda ARM
 #### Start RViz with Moveit
 - [Humble]  
-[Humble] introduces some significant moveit configuration and launch enhancements.  
+  - Humble introduces some significant moveit configuration and launch enhancements.  
 If you have moveit2_tutorial package installed, you can directly launch RViz with:  
 `ros2 launch moveit2_tutorials demo.launch.py`  
-There is no extra step needed. Robot model is automatically published.  
-If you don't have moveit2_tutorial package, or if you prefer to use your own config/launch setup, follow the instruction for [Foxy]
+There is no extra step needed. Robot model is automatically published as described in [Setup] section.
+  - If you don't have moveit2_tutorial package installed, or if you prefer to use your own config/launch setup, follow the instruction for [Foxy]
 
 - [Foxy]  
-Use provided launch script to start Moveit:    
+  - Use provided launch script to start Moveit:    
 `ros2 launch ros_pose_tracking move_group.panda.launch.py`
 
 #### Start ros_pose_tracking node
 - [Humble]  
-If you're using moveit2_tutorial package, run the node as:  
+  - If you're using moveit2_tutorial package, run the node as:  
 `ros2 run ros_pose_tracking ros_pose_tracking`  
-If you're using provided launch script, follow the instruction for [Foxy]
+  - If you're using provided launch script, follow the instruction for [Foxy]
 
 - [Foxy]  
+  - The node needs launch file to run  
 `ros2 launch ros_pose_tracking pose_tracking.panda.launch.py`
 
 #### Adding visualization tool's topic to RViz
@@ -76,36 +90,50 @@ All UR10e joints' operating ranges are -360 degree to +360 degree. This provides
 - Make sure adding `ur10e` (either physcal or simulator robot) IP address to your /etc/hosts.
 
 #### Start UR10e or URSim for UR10e
-Power the robot or simulator, add (via Program tab) and config (via Installation tab) External Control URCap 
+Power the robot or simulator, add External Control URCap to Polyscope's program tab.
 
 #### Start UR client and controllers
-`ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur10e robot_ip:=localhost launch_rviz:=false initial_joint_controller:=joint_trajectory_controller`   
+- [Humble]  
+`ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur10e robot_ip:=ur10e launch_rviz:=false initial_joint_controller:=joint_trajectory_controller`   
+
+- [Foxy]  
+`ros2 launch ur_bringup ur_control.launch.py ur_type:=ur10e robot_ip:=ur10e launch_rviz:=false initial_joint_controller:=joint_trajectory_controller`   
 
 #### Run External Control URCap
-Run external control URCap (via Run button at the botton from Polyscope)
+Configure the URCap via Polyscope's installation tab, make sure host, where ROS controllers and MoveIt run, IP address is specified correctly.  
+Run external control URCap via run button at the botton from Polyscope.
 
 #### Start RViz with Moveit for Physical ARM or URSim
-
 - [Humble]  
-Use your preferred moveit config/launch script, but make sure robot model is published by adding the following two extra parameters to move group node:  
-`
- 'publish_robot_description': True,
- 'publish_robot_description_semantic': True,  
-`
+Use your preferred moveit config/launch script, but make sure robot model is published as described in [Setup/Humble] section.  
 `ros2 launch ros_pose_tracking humble.ur_moveit.launch.py robot_ip:=ur10e launch_rviz:=true`
 
+- [Foxy]  
+`ros2 launch ros_pose_tracking foxy.ur_moveit.launch.py robot_ip:=ur10e launch_rviz:=true`
+
 #### Start ros_pose_tracking node
-Same as Panda ARM, except specifying UR10e move group name:  
+- [Humble]  
+  - Same as Panda ARM, except specifying UR10e move group name:  
 `ros2 run ros_pose_tracking ros_pose_tracking -g ur_manipulator`
 
-Always to check if joint trajectory controller is active:  
-`ros2 control list_controllers`
+- [Foxy]  
+  - Node needs a launch file to run  
+`ros2 launch ros_pose_tracking pose_tracking.ur10e.launch.py`
 
-If it is not active, activate it via:  
+- [General]  
+  - Always to check if joint trajectory controller is active:  
+`ros2 control list_controllers`  
+  - If the controller is not active, activate it via the following before doing anything else:  
 `ros2 control set_controller_state joint_trajectory_controller active`
 
 #### Adding visualization tool's topic to RViz
-Same as Panda ARM
+- Same as Panda ARM
 
 #### Commanding robot ARM to track target poses
-Same as Panda ARM
+#### CLI
+- Same as Panda ARM.
+##### Tesing node
+- Same as Panda ARM
+- Note: If you're using following as the testing poses:  
+`pose_tracking_test.yaml`  
+w/o modification, you may see one of poses is not reachable, and IMO this is more a testing pose tuning issue than MoveIt motion planning solution issue.

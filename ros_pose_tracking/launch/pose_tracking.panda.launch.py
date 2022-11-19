@@ -1,3 +1,5 @@
+# This launch script is for Foxy/Panda ARM
+# Note Humble doesn't need lanuch file for this node
 import os
 import yaml
 from launch import LaunchDescription
@@ -46,7 +48,7 @@ def generate_launch_description():
     )
 
     # MoveGroupInterface demo executable
-    move_group_demo = Node(
+    ros_pose_tracking = Node(
         name="ros_pose_tracking",
         package="ros_pose_tracking",
         executable="ros_pose_tracking",
@@ -55,4 +57,4 @@ def generate_launch_description():
         parameters=[robot_description, robot_description_semantic, kinematics_yaml],
     )
 
-    return LaunchDescription([move_group_demo])
+    return LaunchDescription([ros_pose_tracking])
