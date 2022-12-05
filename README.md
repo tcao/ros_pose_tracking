@@ -32,6 +32,11 @@ The most recent source code is tagged as 2.13, which doesn't have this problem. 
 I used the following command to build, as personal preference, but any colcon command should do:  
 `colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release --packages-select ros_pose_tracking --cmake-args=" --log-level=STATUS" --event-handlers console_direct+`
 
+### Dependencies
+Other than regular moveit_ros_planning, moveit_ros_move_group and some tf2 packages, one following package which may not have binary distribution is required:  
+[moveit_visual_tools] (https://github.com/ros-planning/moveit_visual_tools.git)  
+Use foxy branch for ROS2 foxy, or ros2 branch for ROS2 humble.
+
 ## Run
 ### 7DOF Panda ARM
 #### Start RViz with Moveit
