@@ -57,7 +57,7 @@ public:
   {
     pub_ = create_publisher<geometry_msgs::msg::PoseStamped>(
       ros_pose_tracking::defaultPoseCommandingTopic,
-      1
+      rclcpp::QoS(1)
     );
     thread_ = std::thread(std::bind(&PoseTrackingTest::loop, this));
 
