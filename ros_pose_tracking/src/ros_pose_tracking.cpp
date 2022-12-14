@@ -103,6 +103,8 @@ bool request_plan_execution(const geometry_msgs::msg::Pose & pose)
 
 bool request_execution(const geometry_msgs::msg::Pose & pose)
 {
+  static bool plan_executing = false;
+
   // show target pose visual
   moveit_visual_tools_ptr->deleteAllMarkers();
   // Eigen::Isometry3d could be used for tf transform
@@ -112,14 +114,25 @@ bool request_execution(const geometry_msgs::msg::Pose & pose)
     ros_pose_tracking::VISUAL_AXIS_RADIUS);
   moveit_visual_tools_ptr->trigger();
 
+  if (plan_executing) {
+    RCLCPP_WARN(ros_pose_tracking::LOGGER, "Forced to stop unfinished previous motion");
+    move_group_interface_ptr->stop();
+  }
   move_group_interface_ptr->setPoseTarget(pose);
 
-  if (static_cast<bool>(move_group_interface_ptr->move())) {
-    RCLCPP_INFO(ros_pose_tracking::LOGGER, "Move succeeded!");
-  } else {
-    RCLCPP_ERROR(ros_pose_tracking::LOGGER, "Move failed!");
-    return false;
-  }
+  // TODO(tcao): Use asyncExecute to allow replanning
+  std::thread(
+    [&]() {
+      // Notify caller motion execution is in progress
+      plan_executing = true;
+      if (static_cast<bool>(move_group_interface_ptr->move())) {
+        RCLCPP_INFO(ros_pose_tracking::LOGGER, "Move succeeded!");
+      } else {
+        RCLCPP_ERROR(ros_pose_tracking::LOGGER, "Move failed!");
+      }
+      // Reset the flag
+      plan_executing = false;
+    }).detach();
 
   return true;
 }
