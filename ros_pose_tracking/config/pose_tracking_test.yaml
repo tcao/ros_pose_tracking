@@ -2,7 +2,7 @@ pose_tracking_test:
   ros__parameters:
 
     controller_name: "joint_trajectory_controller"
- 
+
     pose_names: ["pose01", "pose02", "pose03", "pose04", "pose05", "pose06", "pose07", "pose08", "pose09"]
     # the first 3 values are for location (x,y,z), the last 4 values are for pose (x,y,z,w)
     pose01: [0.28, -0.2, 0.5,   0.924135, -0.382065, -0.00018, -0.000485]
@@ -27,7 +27,7 @@ pose_tracking_test:
     pose07: [-0.316581, 0.515877, 0.388593,   0.924, -0.382405, -0.00002, 0.00002]
     pose07_wait: 6000
 
-    pose08: [0.106936, -0.000008, 1.12102,   0.65324, -0.27045, 0.65344, -0.02705]
+    pose08: [0.22, 0.0348, 1.2038,   -0.65, 0.00465, 0.75625, 0.0533]
     pose08_wait: 6000
 
     pose09: [0.40589,0.357684, 0.75333,   0.747626, 0.65632, 0.10129, -0.00635]
