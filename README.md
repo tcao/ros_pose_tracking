@@ -8,6 +8,8 @@ Machine learning inference is done with MediaPipe framework. The simple (less th
 The original code works good in standalone. It doesn't work yet when it is used directly in a ROS 2 python package, because of ROS 2 special python building/running requirements, causing runtime errors without able to find dependencies, or python wrapper for MediaPipe is compatible with actual installed inference engine.
 
 # Demo
-The video shows RViz in action with a Panda ARM, ros_pose_tracking node runs in the background, another C++ node ros_pose_tracking_test requests goals repeatly.  
+The <a href="docs/wmd2023.mp4">video</a>
+<img width="100%" src="docs/wmd2023.gif" alt="Hand gesture in action"/>
+shows RViz in action with a Panda ARM, ros_pose_tracking node runs in the background, another C++ node ros_pose_tracking_test requests goals repeatly.  
 See main branch's README about settings and runnings.  
 ML node wmd2023 performs hand gesture estimation from live camera feeds, and it doesn't yet send pose goal request because above mentioned issues.
